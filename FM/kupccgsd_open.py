@@ -17,6 +17,6 @@ for n in N:
         aux = pd.DataFrame(theta)
         aux.to_csv("datos/FM/KThetaOpen"+str(n)+"u"+str(u)+".csv")
 
-        aux = [get_state_UCCSD(angle, p3) for angle in theta]
+        aux = [get_state_kUpCCGSD(angle, p3) for angle in theta]
         aux = pd.DataFrame(aux)
         aux.to_csv("datos/FM/KStateOpen"+str(n)+"u"+str(u)+".csv")

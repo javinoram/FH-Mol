@@ -1,10 +1,22 @@
-import vqesimulation as qs
 import pennylane as qml
 from pennylane import numpy as np
 import pandas as pd
 import jax
+import sys
+
+sys.path.append("../vqesimulation")
+import quantumsim as qs
 
 
+
+def energies_and_states(H, qubits):
+    H = np.array( qml.matrix(H, wire_order=[i for i in range(qubits)]) )
+    ee, vv = np.linalg.eigh(H)
+    return ee,vv
+
+
+
+###########
 def complete_flow_UCCSD(p1,p2,p3,p4):
     system = qs.vqe_fermihubbard(p1, p2)
     ansazt = qs.uccds_ansatz()
@@ -75,7 +87,7 @@ def params(n, t, u, p, lr, flag):
         "diff_method": "adjoint",
         }
     if flag == 0:
-        singles, doubles = qml.qchem.excitations(params["sites"]*2, params["sites"], 0)
+        singles, doubles = qml.qchem.excitations(params["sites"], params["sites"]*2, 0)
         singles = len(singles)
         doubles = len(doubles)
         minimizate_params = {
