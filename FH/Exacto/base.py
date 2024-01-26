@@ -8,62 +8,36 @@ import quantumsim as qs
 
 
 
+"""
+Funcion para calcular los valores y vectores propios.
+input:
+    H: Hamiltoniano en formato de la libreria Pennylane.
+    qubits: Entero que representa el numero de qubits usado para modelar el hamiltoniano. 
+output:
+    ee: arreglo numpy con los valores propios ordenados de menor a mayor.
+    vv: matriz con los vectores propios del hamiltoniano ( para acceder a ellos se usa vv[:,i] ).
+"""
 def energies_and_states(H, qubits):
     H = np.array( qml.matrix(H, wire_order=[i for i in range(qubits)]) )
     ee, vv = np.linalg.eigh(H)
     return ee,vv
 
 
-
-###########
-def complete_flow_UCCSD(p1,p2,p3,p4):
-    system = qs.vqe_fermihubbard(p1, p2)
-    ansazt = qs.uccds_ansatz()
-    ansazt.set_device( p3 )
-    ansazt.set_node( p3 )
-    ansazt.set_exitations( p3["electrons"], sz=0 )
-    ansazt.set_state( p3["electrons"], sz=0 )
-    system.set_node( ansazt.node, p3["interface"] )
-    optimizer = qs.gradiend_optimizer(p4)
-    optimizer.get_energy = True
-    optimizer.get_params = True
-    energy, optimum = optimizer.VQE(system.cost_function)
-    return energy, optimum
-
-def get_state_UCCSD(angle, ansatz_params):
-    ansatz_params["diff_method"] = "best"
-
-    ansazt = qs.uccds_ansatz()
-    ansazt.set_device( ansatz_params )
-    ansazt.set_node( ansatz_params )
-    ansazt.set_exitations( ansatz_params["electrons"], sz=0 )
-    ansazt.set_state( ansatz_params["electrons"], sz=0 )
-    return np.round( np.real( ansazt.get_state( angle ) ), 7)
-
-
-def complete_flow_KUPCCGSD(p1,p2,p3,p4):
-    system = qs.vqe_fermihubbard(p1, p2)
-
-    ansazt = qs.kupccgsd_ansatz()
-    ansazt.set_device( p3 )
-    ansazt.set_node( p3 )
-    ansazt.set_state( p3["electrons"], sz=0 )
-    system.set_node( ansazt.node, p3["interface"] )
-    optimizer = qs.gradiend_optimizer(p4)
-    optimizer.get_energy = True
-    optimizer.get_params = True
-    energy, optimum = optimizer.VQE(system.cost_function)
-    return energy, optimum
-
-def get_state_kUpCCGSD(angle, ansatz_params):
-    ansatz_params["diff_method"] = "best"
-
-    ansazt = qs.kupccgsd_ansatz()
-    ansazt.set_device( ansatz_params )
-    ansazt.set_node( ansatz_params )
-    ansazt.set_state( ansatz_params["electrons"], sz=0 )
-    return np.round( np.real( ansazt.get_state( angle ) ), 7)
-
+"""
+Funcion para construir los parametros para ejecutar el VQE en el modelo Fermi-Hubbard.
+input:
+    n: Cantidad de sitios del sistema para una cadena 1D.
+    t: Parametro de hopping (float).
+    u: Parametro de on-site potencial (float).
+    p: Condiciones de borde del sistema, True significa periodicidad y False condiciones abiertas.
+    lr: float para indicar el learning rate que usara el optimizador.
+    flag: Valor entero para seleccionar el ansatz, 0 para el UCCSD y 1 para el kUpCCGSD.
+output:
+    params: Parametros del modelo Fermi-Hubbard.
+    params_lat: Parametros de la lattice del modelo.
+    ansatz_params: Parametros para la clase del ansatz.
+    minimizate_params: Parametros para la clase del optimizador.
+"""
 def params(n, t, u, p, lr, flag):
     params = {
         "sites": n, 

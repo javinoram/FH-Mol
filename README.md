@@ -1,5 +1,15 @@
 Repositorio con los codigos para calcular ejecuciones de VQE para moleculas y fermi-Hubbard. Para ejercutar estos archivos, es necesario tener, de forma local o descargar la libreria VqePy y luego importarla al codigo.
 
+
+# Ejecutar codigo
+Para ejecutar los codigos, se tiene que estar en el directiorio base del proyecto.
+
+`
+python3 <archivo> <learning rate>
+`
+
+El archivo es uno de los .py dentro de las carpetas de los optimizadores (distinto al base.py). El otro parametro es el learning rate que usara el optimizadore en la convergencia.
+
 # Estructuras de los archivos
 
 Existen 2 carpetas de archivos, la primera es FH (modelo de Fermi-Hubbard) y la segunda es Mol (estructuras moleculares).
